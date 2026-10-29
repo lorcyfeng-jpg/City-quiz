@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>测测你本命定居城市｜你最适合在哪长期定居？</title>
+<style>
+:root{--bg:#f3f0eb;--card:#fbf9f6;--tx:#4a4541;--sub:#8a847d;--ac:#a3b09d;--ac2:#c8aaa5;--ln:#e6e0d8;--sel:#e9eee6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a2826;--card:#34312e;--tx:#ece7e1;--sub:#aaa39b;--ln:#46423d;--sel:#3f4a3e}}
+:root[data-theme="dark"]{--bg:#2a2826;--card:#34312e;--tx:#ece7e1;--sub:#aaa39b;--ln:#46423d;--sel:#3f4a3e}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.7}
+.wrap{max-width:480px;margin:0 auto;padding:20px 18px 40px}
+.top{text-align:center;font-size:13px;color:var(--sub);padding:4px 0 14px;letter-spacing:.5px}
+.card{background:var(--card);border-radius:20px;padding:26px 22px;box-shadow:0 2px 14px rgba(120,110,100,.08)}
+h1{font-size:26px;margin:6px 0 10px;line-height:1.4;text-align:center}
+.intro{color:var(--sub);text-align:center;font-size:14px;margin:0 0 24px}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;font-size:16px;background:var(--ac);color:#fff;cursor:pointer;font-family:inherit}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.ghost{background:transparent;color:var(--sub);border:1px solid var(--ln);margin-top:10px}
+.bar{height:5px;background:var(--ln);border-radius:5px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;background:var(--ac2);width:0;transition:width .25s}
+.cnt{font-size:12px;color:var(--sub);text-align:right;margin-bottom:14px}
+.q{font-size:18px;font-weight:600;margin:0 0 16px;line-height:1.55}
+.opt{display:block;width:100%;text-align:left;background:transparent;border:1.5px solid var(--ln);border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:15px;color:var(--tx);cursor:pointer;font-family:inherit;line-height:1.55}
+.opt.on{background:var(--sel);border-color:var(--ac)}
+.hide{display:none}
+.tag{text-align:center;font-size:13px;color:var(--sub)}
+.city{font-size:40px;text-align:center;margin:6px 0 4px;letter-spacing:2px}
+.match{text-align:center;color:var(--ac2);font-size:14px;margin-bottom:18px}
+.sec{background:var(--bg);border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:14.5px}
+.sec b{display:block;font-size:13px;color:var(--ac);margin-bottom:2px}
+.sec.w b{color:var(--ac2)}
+.alt{font-size:13px;color:var(--sub);text-align:center;margin:14px 0 4px}
+.foot{text-align:center;font-size:12px;color:var(--sub);margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top">测测你本命定居城市｜你最适合在哪长期定居？</div>
+
+<div class="card" id="cover">
+<h1>测测你本命定居城市</h1>
+<p class="intro">15道小题，不玄学，只看你真实的生活偏好。<br>从气候、节奏到口味，帮你找到最舒服的那座城。</p >
+<button class="btn" id="start">开始测试</button>
+</div>
+
+<div class="card hide" id="quiz">
+<div class="bar"><i id="pg"></i></div>
+<div class="cnt" id="cnt"></div>
+<p class="q" id="qt"></p >
+<div id="opts"></div>
+<button class="btn" id="next" disabled>下一题</button>
+</div>
+
+<div class="card hide" id="res">
+<div class="tag">你的本命定居城市是</div>
+<div class="city" id="rc"></div>
+<div class="match" id="rm"></div>
+<div class="sec"><b>🌿 宜居亮点</b><span id="r1"></span></div>
+<div class="sec"><b>🤍 适合这样的你</b><span id="r2"></span></div>
+<div class="sec w"><b>☁️ 小小缺点</b><span id="r3"></span></div>
+<div class="alt" id="ra"></div>
+<button class="btn ghost" id="again">重新测试</button>
+<div class="foot">截图保存，发给也在纠结去哪生活的朋友吧 ✿</div>
+</div>
+</div>
+
+<script>
+// 每题的选项顺序即该维度的分值(0-3)。维度：T偏暖 H耐潮 P快节奏 B爱热闹 M收入期待 F美食 N自然 O包容
+var Q=[
+["T","你理想的日常气温是？",["凉爽偏冷，穿外套刚刚好","温和舒适，不冷不热","偏暖，短袖多一点","常年温暖，越热越有精神"]],
+["H","对潮湿天气（回南天、梅雨）你的接受度？",["很难受，我要干爽","有点烦，但能忍","基本无所谓","潮点没关系，空气润还挺好"]],
+["P","理想的通勤状态是？",["步行或骑车15分钟内","30分钟内，不拥挤就行","45分钟左右，换来更多机会可以接受","1小时也行，只要工作值得"]],
+["B","周末你最想怎么过？",["在家或公园，安安静静","小店咖啡馆，人少一点","逛街看展，热热闹闹","夜生活、聚会、演出，越多越好"]],
+["F","你对美食的要求是？",["能吃饱吃好就行","家常菜稳定好吃","想要丰富的本地特色","每周都想探索新餐厅，要有各国风味"]],
+["M","你对收入和事业的期待？",["够用就好，生活比赚钱重要","中等收入，有点积蓄","希望有不错的上升空间","想要高薪和大平台，愿意拼"]],
+["N","你离自然有多近才安心？",["无所谓，城市就好","偶尔去公园走走","半小时能到山或水边","出门就是山海湖，越近越好"]],
+["O","你希望城市对外来者有多包容？",["我适应力强，没所谓","最好大家友善就行","希望外地人很多、不被问东问西","要多元文化，各种生活方式都被尊重"]],
+["T","你最喜欢的季节状态是？",["四季分明，尤其爱冬天","春秋长一点最舒服","夏天长一点，阳光充足","没有冬天最好"]],
+["P","下班后的理想生活？",["准点下班，煮饭散步","偶尔加班，周末能休息","有些忙碌，但很有成就感","忙才充实，节奏越快越好"]],
+["B","你理想的居住环境？",["郊区或安静社区，门前有绿","安静小区，附近有菜场","市中心附近，生活方便","市中心核心区，楼下就是热闹"]],
+["M","面对职场竞争，你的态度？",["不想卷，慢慢来","适度竞争可以","有挑战才有成长","压力就是动力"]],
+["F","你更偏爱哪种饮食氛围？",["清淡养生，少油少盐","朴素家常，一日三餐","重口味、辣、鲜香都爱","小吃夜宵街边摊，随时随地"]],
+["N","你理想的假期是？",["宅家休息或逛城","周边短途 city walk","徒步露营看风景","海边或雪山，长住最好"]],
+["O","你更喜欢什么样的邻里社交？",["各过各的，互不打扰","偶尔打招呼，礼貌就好","能交到谈得来的朋友","圈子多元，不同背景的人都能聊"]]
+];
+var C="杭州|22223232|山水和互联网气质并存，西湖边慢慢生活|喜欢有品位、爱折腾又怕太卷的你|房价偏高，夏天闷热潮\n东京|22333312|干净有序，美食密度高，通勤系统顶级|享受精致、规则感与高效的你|生活成本高，节奏偏紧、人情偏疏\n首尔|11332311|街区潮流感强，夜生活与美食都很丰富|爱追新鲜、喜欢热闹的你|竞争压力大，冬天干冷\n新加坡|33223313|多元包容，治安好，一年四季都是夏天|想要安全、国际化环境的你|生活成本高，天气偏闷热\n曼谷|33231313|烟火气十足，美食便宜又好吃|热爱生活、爱吃爱逛的你|天气炎热，交通堵\n清迈|32010233|气候舒服，咖啡馆多，节奏慢到想发呆|想慢生活的自由职业者、数字游民|大厂机会少，雨季潮湿\n吉隆坡|33121313|多元美食，物价友好，包容度高|想要性价比和多元文化的你|公共交通一般，天气偏热\n大阪|22232312|人情味足，吃货天堂，生活成本比东京低|爱吃爱笑、爱热闹的你|夏天闷热，工作机会不如东京\n京都|22112221|四季分明，古意安静，适合沉浸式生活|偏内向、爱文化、喜欢安静的你|游客多，生活便利度一般\n上海|22333302|机会多，精致又国际化，生活方便|想要事业与生活品质兼得的你|房价高，空间小，自然少\n深圳|32323213|年轻开放，机会多，对外地人很友好|想闯一闯、不爱被人情束缚的你|房价高，节奏快\n成都|22131312|慢节奏小确幸，火锅小吃咖啡馆都在身边|爱吃爱玩、喜欢轻松氛围的你|冬天湿冷，收入天花板一般\n昆明|21010232|四季如春，花多天蓝，生活节奏温柔|怕热怕冷、想要舒服气候的你|收入机会有限，紫外线强\n大理|21000133|山水治愈，自由的人很多，心真的会静|想远离内卷、过松弛生活的你|就业机会少，医疗资源有限\n厦门|32121222|海边城市，空气好，生活干净舒服|爱海边、喜欢小清新的你|夏季炎热，台风季\n广州|33232312|早茶烟火气，包容度高，生活很接地气|爱美食、想要务实生活的你|回南天潮湿，夏季漫长\n青岛|21121222|海风清爽，啤酒海鲜，夏天不闷|爱海边又不想太热的你|冬天偏冷，机会一般\n长沙|23131312|夜生活丰富，年轻有活力，吃货友好|爱热闹、爱吃辣、爱社交的你|冬天湿冷，空气偏闷\n西安|10121311|历史厚重，面食小吃丰富，生活成本适中|爱文化、爱面食、性格踏实的你|冬天干冷，风沙偶有\n哈尔滨|00120221|冬天有冰雪浪漫，夏天凉爽，生活成本低|不怕冷、喜欢真正四季的你|冬季漫长，机会较少\n北京|10323212|文化资源丰富，平台大，四季分明|上进心强、喜欢大平台的你|通勤远，春季风沙，冬干冷\n重庆|33231312|山城立体感，夜景和火锅都很治愈|爱热闹、爱辣、爱生活的你|夏天酷热，爬坡爬楼多\n三亚|32010132|阳光海边常伴，真正的度假式生活|爱海、爱晒太阳、想慢生活的你|就业机会少，物价偏高\n香港|33333313|节奏快，美食遍地，国际化程度高|高效、多元、爱拼搏的你|居住空间小，房价极高\n台北|33232323|小店温暖，夜市丰富，友善有礼|爱小确幸、喜欢人情味的你|湿热多雨，收入涨幅有限\n苏州|22112222|园林水巷，安静精致，生活节奏舒服|爱慢节奏、重生活品质的你|夜生活偏少，夏天偏闷\n南京|22222222|四季分明，文化底蕴深，性价比高|性格均衡、想稳稳生活的你|夏天炎热，冬天湿冷\n伦敦|12333213|文化多元，博物馆公园丰富，机会多|爱艺术、爱国际化的你|房租高，天气常阴雨\n巴黎|11232313|街头浪漫，艺术美食都在日常中|爱浪漫、重生活仪式感的你|房租高，办事效率低\n柏林|11231223|自由包容，艺术氛围浓，生活成本相对低|爱创作、爱自由、爱夜生活的你|冬天灰暗，效率偏慢\n阿姆斯特丹|12223223|骑行友好，运河小城，包容开放|爱骑车、爱简单自由生活的你|房子紧张，天气多雨\n维也纳|11112222|治安好，生活品质高，文化氛围深厚|爱古典、爱安静、重品质的你|夜生活较少，节奏偏慢\n布达佩斯|11121222|建筑浪漫，温泉咖啡馆，物价温和|爱艺术、爱松弛感的你|公共服务效率一般，冬天偏冷\n苏黎世|11213132|山湖环绕，治安好，收入水平高|重品质、喜欢干净秩序的你|物价极高，社交圈相对封闭\n里斯本|21121223|阳光充足，海风柔和，生活成本友好|爱阳光、想要松弛生活的你|坡路多，薪资偏低\n巴塞罗那|31131323|海边加建筑艺术，阳光充足，夜生活丰富|爱海、爱艺术、爱聚会的你|小偷较多，工作节奏偏慢\n纽约|11333313|机会无限，什么都有，永远不无聊|野心大、爱热闹、爱挑战的你|房租高，压力大，冬夏极端\n旧金山|20323223|气候凉爽干燥，科技创新氛围浓，自然近|爱创新、爱户外的你|房价极高，治安一般\n洛杉矶|30223223|阳光常伴，海滩山景，娱乐产业发达|爱阳光、爱自由、爱开车的你|通勤依赖汽车，房价高\n温哥华|12112233|山海相连，空气好，多元友好|爱自然、爱安静的你|房价高，冬季多雨\n多伦多|11223213|多元包容，职业机会多，生活便利|想要稳定移民生活的你|冬天漫长，房租高\n悉尼|31223233|海港美景，阳光充足，生活品质高|爱海、爱户外的你|物价高，房价贵\n墨尔本|21222323|咖啡与艺术之城，包容友好，生活便利|爱文艺、爱咖啡的你|天气多变，物价偏高\n奥克兰|22112233|气候温和，海湾和自然触手可及|爱海、爱慢生活的你|机会一般，物价偏高\n迪拜|30223202|高收入，治安好，设施现代化|想高收入、爱现代化的你|夏季极热，缺少自然\n布拉格|11121212|童话老城，啤酒美食，物价友好|爱历史、爱步行的你|游客多，冬天灰冷\n哥本哈根|02113223|骑行友好，幸福感高，设计感强|重生活平衡、爱设计的你|物价高，冬天漫长\n斯德哥尔摩|01113133|岛屿水景，福利好，工作生活平衡|爱自然、爱安静的你|冬天极长，社交圈较封闭\n都柏林|13122223|友好热情，酒馆音乐文化浓厚，科技公司多|爱音乐、爱热闹、爱交朋友的你|房租高，天气多雨\n慕尼黑|11223232|生活品质高，靠近阿尔卑斯，治安好|爱户外、爱秩序、爱品质的你|房价高，社交偏保守".split("\n").map(function(s){var a=s.split("|");return{n:a[0],v:a[1].split("").map(Number),h:a[2],f:a[3],c:a[4]}});
+var $=function(i){return document.getElementById(i)},cur=0,ans=[];
+function show(id){["cover","quiz","res"].forEach(function(x){$(x).classList.toggle("hide",x!==id)});window.scrollTo(0,0)}
+function render(){var q=Q[cur];$("cnt").textContent=(cur+1)+" / "+Q.length;$("pg").style.width=(cur/Q.length*100)+"%";$("qt").textContent=(cur+1)+"."+q[1];
+var o=$("opts");o.innerHTML="";q[2].forEach(function(t,i){var b=document.createElement("button");b.className="opt"+(ans[cur]===i?" on":"");b.textContent=t;b.onclick=function(){ans[cur]=i;render()};o.appendChild(b)});
+$("next").disabled=ans[cur]===undefined;$("next").textContent=cur===Q.length-1?"查看结果":"下一题"}
+function result(){var D="TH PBMFNO".replace(" ","").split(""),s={},k={};
+Q.forEach(function(q,i){s[q[0]]=(s[q[0]]||0)+ans[i];k[q[0]]=(k[q[0]]||0)+1});
+var u="THPBMFNO".split("").map(function(d){return s[d]/k[d]});
+var r=C.map(function(c){var d=0;c.v.forEach(function(x,i){d+=Math.abs(x-u[i])});return{c:c,d:d}}).sort(function(a,b){return a.d-b.d});
+var t=r[0].c,p=Math.max(60,Math.min(98,Math.round(100-r[0].d*7)));
+$("rc").textContent=t.n;$("rm").textContent="契合度 "+p+"%";$("r1").textContent=t.h+"。";$("r2").textContent=t.f+"。";$("r3").textContent=t.c+"，但瑕不掩瑜。";
+$("ra").textContent="备选城市：「"+r[1].c.n+"」「"+r[2].c.n+"」";show("res")}
+$("start").onclick=function(){cur=0;ans=[];render();show("quiz")};
+$("next").onclick=function(){if(cur<Q.length-1){cur++;render()}else{$("pg").style.width="100%";result()}};
+$("again").onclick=function(){show("cover")};
+</script>
+</body>
+</html>
